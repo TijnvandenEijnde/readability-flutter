@@ -1,7 +1,7 @@
 #!/usr/bin/sh
-export NDK_PATH=/home/sphericalkat/Android/Sdk/ndk/27.0.11902837
+export NDK_PATH=/home/sphericalkat/Android/Sdk/ndk/28.2.13676358
 export TARGET=aarch64-linux-android
-export API=21
+export API=26
 
 export CC=$NDK_PATH/toolchains/llvm/prebuilt/linux-x86_64/bin/$TARGET$API-clang
 export STRIP=$NDK_PATH/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip

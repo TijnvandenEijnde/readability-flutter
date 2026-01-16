@@ -21,7 +21,8 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    readabilityResult = readability.parseAsync('https://www.bbc.com/sport/football/articles/cl7y4z82z2do');
+    readabilityResult = readability
+        .parseAsync('https://www.bbc.com/sport/football/articles/cl7y4z82z2do');
   }
 
   @override
@@ -40,17 +41,19 @@ class _MyAppState extends State<MyApp> {
               children: [
                 FutureBuilder<Article>(
                   future: readabilityResult,
-                  builder: (BuildContext context, AsyncSnapshot<Article> value) {
+                  builder:
+                      (BuildContext context, AsyncSnapshot<Article> value) {
                     final textContent =
                         (value.hasData) ? value.data?.textContent : 'loading';
-                    final title = 
+                    final title =
                         (value.hasData) ? value.data?.title : 'loading';
 
                     return Column(
                       children: [
                         Text(
                           title ?? '',
-                          style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                          style: const TextStyle(
+                              fontSize: 30, fontWeight: FontWeight.bold),
                         ),
                         spacerSmall,
                         Text(

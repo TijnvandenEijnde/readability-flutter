@@ -1,6 +1,6 @@
 ANDROID_OUT=../android/src/main/jniLibs
 ANDROID_SDK=$(HOME)/Library/Android/sdk
-NDK_BIN=$(ANDROID_SDK)/ndk/23.1.7779620/toolchains/llvm/prebuilt/darwin-x86_64/bin
+NDK_BIN=$(ANDROID_SDK)/ndk/28.2.13676358/toolchains/llvm/prebuilt/darwin-x86_64/bin
 LIB_NAME=libreadability
 
 android-armv7a:
@@ -8,28 +8,28 @@ android-armv7a:
 	GOOS=android \
 	GOARCH=arm \
 	GOARM=7 \
-	CC=$(NDK_BIN)/armv7a-linux-androideabi21-clang \
+	CC=$(NDK_BIN)/armv7a-linux-androideabi26-clang \
 	go build -buildmode=c-shared -o $(ANDROID_OUT)/armeabi-v7a/${LIB_NAME}.so .
 
 android-arm64:
 	CGO_ENABLED=1 \
 	GOOS=android \
 	GOARCH=arm64 \
-	CC=$(NDK_BIN)/aarch64-linux-android21-clang \
+	CC=$(NDK_BIN)/aarch64-linux-android26-clang \
 	go build -buildmode=c-shared -o $(ANDROID_OUT)/arm64-v8a/${LIB_NAME}.so .
 
 android-x86:
 	CGO_ENABLED=1 \
 	GOOS=android \
 	GOARCH=386 \
-	CC=$(NDK_BIN)/i686-linux-android21-clang \
+	CC=$(NDK_BIN)/i686-linux-android26-clang \
 	go build -buildmode=c-shared -o $(ANDROID_OUT)/x86/${LIB_NAME}.so .
 
 android-x86_64:
 	CGO_ENABLED=1 \
 	GOOS=android \
 	GOARCH=amd64 \
-	CC=$(NDK_BIN)/x86_64-linux-android21-clang \
+	CC=$(NDK_BIN)/x86_64-linux-android26-clang \
 	go build -buildmode=c-shared -o $(ANDROID_OUT)/x86_64/${LIB_NAME}.so .
 
 ios-x86_64-sim:
@@ -60,14 +60,12 @@ ios: ios-x86_64-sim ios-arm64-sim ios-arm64
     -output ${LIB_NAME}_iphonesimulator.a
 	rm ${LIB_NAME}_arm64_iphonesimulator.*
 	rm ${LIB_NAME}_amd64_iphonesimulator.*
-
 	mkdir -p ios-arm64
 	mkdir -p ios-simulator
 	mv ./${LIB_NAME}_arm64_iphoneos.a ./ios-arm64/${LIB_NAME}.a
 	cp ./${LIB_NAME}_arm64_iphoneos.h ./ios-arm64/${LIB_NAME}.h
 	mv ./${LIB_NAME}_iphonesimulator.a ./ios-simulator/${LIB_NAME}.a
 	mv ./${LIB_NAME}_arm64_iphoneos.h ./ios-simulator/${LIB_NAME}.h
-
 	xcodebuild -create-xcframework \
 			-output ${LIB_NAME}.xcframework \
 			-library ios-arm64/${LIB_NAME}.a \
