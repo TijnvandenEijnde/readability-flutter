@@ -57,13 +57,6 @@ class ReadabilityBindings {
       _FreeArticlePtr.asFunction<void Function(CArticle)>();
 }
 
-final class _GoString_ extends ffi.Struct {
-  external ffi.Pointer<Utf8> p;
-
-  @ptrdiff_t()
-  external int n;
-}
-
 typedef ptrdiff_t = ffi.Long;
 typedef Dartptrdiff_t = int;
 
