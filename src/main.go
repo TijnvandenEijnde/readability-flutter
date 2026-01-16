@@ -21,10 +21,12 @@ typedef struct {
 */
 import "C"
 import (
+	"bytes"
+	"strings"
 	"time"
 	"unsafe"
 
-	"github.com/go-shiori/go-readability"
+    "codeberg.org/readeck/go-readability/v2"
 )
 
 //export Parse
@@ -38,19 +40,46 @@ func Parse(url *C.char) (result C.CArticle) {
 		}
 	}
 
-	return C.CArticle{
-		title:        C.CString(article.Title),
-		author:       C.CString(article.Byline),
-		length:       C.int(article.Length),
-		excerpt:      C.CString(article.Excerpt),
-		site_name:     C.CString(article.SiteName),
-		image_url:    C.CString(article.Image),
-		favicon_url:  C.CString(article.Favicon),
-		content:      C.CString(article.Content),
-		text_content: C.CString(article.TextContent),
-		err:		  nil,
-		success:      1,
-	}
+    var htmlBuf bytes.Buffer
+    if err := article.RenderHTML(&htmlBuf); err != nil {
+        return C.CArticle{
+           err: C.CString(err.Error()),
+           success: 0,
+        }
+    }
+    htmlContent := htmlBuf.String()
+
+    var textBuf bytes.Buffer
+    if err := article.RenderText(&textBuf); err != nil {
+        return C.CArticle{
+           err: C.CString(err.Error()),
+           success: 0,
+        }
+    }
+    textContent := textBuf.String()
+
+    wordCount := len(strings.Fields(textContent))
+
+    publishedTime := ""
+    if pt, err := article.PublishedTime(); err == nil {
+        publishedTime = pt.Format(time.RFC3339)
+    }
+
+    return C.CArticle{
+       title:          C.CString(article.Title()),
+       author:         C.CString(article.Byline()),
+       length:         C.int(wordCount),
+       excerpt:        C.CString(article.Excerpt()),
+       site_name:      C.CString(article.SiteName()),
+       image_url:      C.CString(article.ImageURL()),
+       favicon_url:    C.CString(article.Favicon()),
+       content:        C.CString(htmlContent),
+       text_content:   C.CString(textContent),
+       language:       C.CString(article.Language()),
+       published_time: C.CString(publishedTime),
+       err:            nil,
+       success:        1,
+    }
 }
 
 //export FreeArticle
