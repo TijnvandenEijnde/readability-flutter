@@ -13,19 +13,16 @@ A new Flutter FFI plugin project.
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Your Company' => 'email@example.com' }
 
-  # This will ensure the source files in Classes/ are included in the native
-  # builds of apps using this FFI plugin. Podspec does not support relative
-  # paths, so Classes contains a forwarder C file that relatively imports
-  # `../src/*` so that the C sources can be shared among all target platforms.
+  # The sources and the xcframework live in readability/, which is shared with
+  # the Swift Package Manager package (readability/Package.swift).
   s.source           = { :path => '.' }
-  s.source_files = 'Classes/**/*'
+  s.source_files = 'readability/Sources/readability/**/*.{c,h}'
   s.dependency 'Flutter'
-  s.platform = :ios, '12.0'
+  s.platform = :ios, '13.0'
 
-  s.public_header_files = 'Classes/**/*.h'
-  s.vendored_frameworks = 'libreadability.xcframework'
+  s.public_header_files = 'readability/Sources/readability/include/**/*.h'
+  s.vendored_frameworks = 'readability/libreadability.xcframework'
 
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
-  s.swift_version = '5.0'
 end

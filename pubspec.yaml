@@ -4,8 +4,8 @@ version: 0.2.0
 homepage: https://codeberg.org/readeck/go-readability/v2
 
 environment:
-  sdk: '>=3.4.3 <4.0.0'
-  flutter: '>=3.3.0'
+  sdk: ^3.11.0
+  flutter: '>=3.41.0'
 
 dependencies:
   ffi: ^2.1.2
