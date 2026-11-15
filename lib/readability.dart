@@ -83,10 +83,7 @@ class ArticleResponse {
   final Article article;
   final int id;
 
-  ArticleResponse({
-    required this.article,
-    required this.id,
-  });
+  ArticleResponse({required this.article, required this.id});
 }
 
 /// Counter to identify [_ParseRequest]s and [ArticleResponse]s.
@@ -137,8 +134,9 @@ Future<SendPort> _helperIsolateSendPort = () async {
 
           // Convert the native article to a Dart article.
           final articleDart = Article(
-            title:
-                article.title == nullptr ? null : article.title.toDartString(),
+            title: article.title == nullptr
+                ? null
+                : article.title.toDartString(),
             author: article.author == nullptr
                 ? null
                 : article.author.toDartString(),
@@ -168,8 +166,10 @@ Future<SendPort> _helperIsolateSendPort = () async {
                 ? null
                 : article.published_time.toDartString(),
           );
-          ArticleResponse articleDartResponse =
-              ArticleResponse(article: articleDart, id: data.id);
+          ArticleResponse articleDartResponse = ArticleResponse(
+            article: articleDart,
+            id: data.id,
+          );
 
           // Free the native article.
           _bindings.FreeArticle(article);

@@ -17,38 +17,30 @@ import 'package:ffi/ffi.dart';
 class ReadabilityBindings {
   /// Holds the symbol lookup function.
   final ffi.Pointer<T> Function<T extends ffi.NativeType>(String symbolName)
-      _lookup;
+  _lookup;
 
   /// The symbols are looked up in [dynamicLibrary].
   ReadabilityBindings(ffi.DynamicLibrary dynamicLibrary)
-      : _lookup = dynamicLibrary.lookup;
+    : _lookup = dynamicLibrary.lookup;
 
   /// The symbols are looked up with [lookup].
   ReadabilityBindings.fromLookup(
-      ffi.Pointer<T> Function<T extends ffi.NativeType>(String symbolName)
-          lookup)
-      : _lookup = lookup;
+    ffi.Pointer<T> Function<T extends ffi.NativeType>(String symbolName) lookup,
+  ) : _lookup = lookup;
 
-  CArticle Parse(
-    ffi.Pointer<Utf8> url,
-  ) {
-    return _Parse(
-      url,
-    );
+  CArticle Parse(ffi.Pointer<Utf8> url) {
+    return _Parse(url);
   }
 
   late final _ParsePtr =
       _lookup<ffi.NativeFunction<CArticle Function(ffi.Pointer<Utf8>)>>(
-          'Parse');
+        'Parse',
+      );
   late final _Parse =
       _ParsePtr.asFunction<CArticle Function(ffi.Pointer<Utf8>)>();
 
-  void FreeArticle(
-    CArticle article,
-  ) {
-    return _FreeArticle(
-      article,
-    );
+  void FreeArticle(CArticle article) {
+    return _FreeArticle(article);
   }
 
   late final _FreeArticlePtr =
