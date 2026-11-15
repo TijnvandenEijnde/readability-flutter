@@ -45,7 +45,16 @@ const String _libName = 'readability';
 
 /// The dynamic library in which the symbols for [ReadabilityBindings] can be found.
 final DynamicLibrary _dylib = () {
-  if (Platform.isMacOS || Platform.isIOS) {
+  if (Platform.isIOS) {
+    // Swift Package Manager links the static library into the app executable.
+    final DynamicLibrary process = DynamicLibrary.process();
+    if (process.providesSymbol('Parse')) {
+      return process;
+    }
+    // CocoaPods wraps it in a dynamic framework.
+    return DynamicLibrary.open('$_libName.framework/$_libName');
+  }
+  if (Platform.isMacOS) {
     return DynamicLibrary.open('$_libName.framework/$_libName');
   }
   if (Platform.isAndroid || Platform.isLinux) {
