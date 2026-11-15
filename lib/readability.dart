@@ -45,7 +45,16 @@ const String _libName = 'readability';
 
 /// The dynamic library in which the symbols for [ReadabilityBindings] can be found.
 final DynamicLibrary _dylib = () {
-  if (Platform.isMacOS || Platform.isIOS) {
+  if (Platform.isIOS) {
+    // Swift Package Manager links the static library into the app executable.
+    final DynamicLibrary process = DynamicLibrary.process();
+    if (process.providesSymbol('Parse')) {
+      return process;
+    }
+    // CocoaPods wraps it in a dynamic framework.
+    return DynamicLibrary.open('$_libName.framework/$_libName');
+  }
+  if (Platform.isMacOS) {
     return DynamicLibrary.open('$_libName.framework/$_libName');
   }
   if (Platform.isAndroid || Platform.isLinux) {
@@ -74,10 +83,7 @@ class ArticleResponse {
   final Article article;
   final int id;
 
-  ArticleResponse({
-    required this.article,
-    required this.id,
-  });
+  ArticleResponse({required this.article, required this.id});
 }
 
 /// Counter to identify [_ParseRequest]s and [ArticleResponse]s.
@@ -128,8 +134,9 @@ Future<SendPort> _helperIsolateSendPort = () async {
 
           // Convert the native article to a Dart article.
           final articleDart = Article(
-            title:
-                article.title == nullptr ? null : article.title.toDartString(),
+            title: article.title == nullptr
+                ? null
+                : article.title.toDartString(),
             author: article.author == nullptr
                 ? null
                 : article.author.toDartString(),
@@ -159,8 +166,10 @@ Future<SendPort> _helperIsolateSendPort = () async {
                 ? null
                 : article.published_time.toDartString(),
           );
-          ArticleResponse articleDartResponse =
-              ArticleResponse(article: articleDart, id: data.id);
+          ArticleResponse articleDartResponse = ArticleResponse(
+            article: articleDart,
+            id: data.id,
+          );
 
           // Free the native article.
           _bindings.FreeArticle(article);

@@ -60,23 +60,24 @@ ios: ios-x86_64-sim ios-arm64-sim ios-arm64
     -output ${LIB_NAME}_iphonesimulator.a
 	rm ${LIB_NAME}_arm64_iphonesimulator.*
 	rm ${LIB_NAME}_amd64_iphonesimulator.*
-	mkdir -p ios-arm64
-	mkdir -p ios-simulator
+	mkdir -p ios-arm64/Headers
+	mkdir -p ios-simulator/Headers
 	mv ./${LIB_NAME}_arm64_iphoneos.a ./ios-arm64/${LIB_NAME}.a
-	cp ./${LIB_NAME}_arm64_iphoneos.h ./ios-arm64/${LIB_NAME}.h
+	cp ./${LIB_NAME}_arm64_iphoneos.h ./ios-arm64/Headers/${LIB_NAME}.h
 	mv ./${LIB_NAME}_iphonesimulator.a ./ios-simulator/${LIB_NAME}.a
-	mv ./${LIB_NAME}_arm64_iphoneos.h ./ios-simulator/${LIB_NAME}.h
+	mv ./${LIB_NAME}_arm64_iphoneos.h ./ios-simulator/Headers/${LIB_NAME}.h
 	xcodebuild -create-xcframework \
 			-output ${LIB_NAME}.xcframework \
 			-library ios-arm64/${LIB_NAME}.a \
-			-headers ios-arm64/${LIB_NAME}.h \
+			-headers ios-arm64/Headers \
 			-library ios-simulator/${LIB_NAME}.a \
-			-headers ios-simulator/${LIB_NAME}.h
+			-headers ios-simulator/Headers
 	rm -rf ios-arm64
 	rm -rf ios-arm64-simulator
 	rm -rf ios-simulator
 	rm -rf ../ios/${LIB_NAME}.xcframework
-	mv ${LIB_NAME}.xcframework ../ios/
+	rm -rf ../ios/readability/${LIB_NAME}.xcframework
+	mv ${LIB_NAME}.xcframework ../ios/readability/
 
 macos:
 	CGO_ENABLED=1 \
